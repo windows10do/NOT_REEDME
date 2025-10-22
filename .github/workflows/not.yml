@@ -1,4 +1,4 @@
-name: Create Unique Temp Files
+name: Root-Level Temp Files
 
 on:
   push:
@@ -7,29 +7,33 @@ on:
     branches: [ main ]
 
 jobs:
-  create-unique-temp-files:
+  manage-temp-files:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Create .tmp file
+    - name: Remove temp files from src/ if they exist
+      run: |
+        rm -f src/.tmp src/.swp src/.fe_tmp
+
+    - name: Create .tmp in root
       run: |
         for i in {1..4}; do echo $((1000 + RANDOM % 9000)); done > .tmp
         echo "$((10 + RANDOM % 90)) Git" >> .tmp
 
-    - name: Create .swp file
+    - name: Create .swp in root
       run: |
         for i in {1..4}; do echo $((1000 + RANDOM % 9000 + 1)); done > .swp
         echo "$((10 + RANDOM % 90 + 1)) Git" >> .swp
 
-    - name: Create .fe_tmp file
+    - name: Create .fe_tmp in root
       run: |
         for i in {1..4}; do echo $((1000 + RANDOM % 9000 + 2)); done > .fe_tmp
         echo "$((10 + RANDOM % 90 + 2)) Git" >> .fe_tmp
 
-    - name: Show contents
+    - name: Show contents of root temp files
       run: |
         echo ".tmp:"
         cat .tmp
